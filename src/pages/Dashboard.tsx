@@ -1,10 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link,  useLocation, useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
+    const {state} = useLocation()
+    const navigate = useNavigate()
+
+    const onLogout = () =>{
+      navigate('/login', {
+        replace:true
+      })
+    }
+
+    const toPokemon = () =>{
+      navigate('/dashboard/pokemon/1', {
+        replace:true,
+        state:{
+          logged:true, //Eso es lo importante para las rutas privadas
+          
+      }
+      })
+    }
+
     const [pokemons, setPokemons] = useState([]);
-    const userId = 'someUserId'; //userId de ejemplo
-    
+   
     useEffect(() => {
         const fetchPokemons = async () => {
           try {
@@ -18,12 +37,15 @@ export default function Dashboard() {
         };
      
         fetchPokemons();
-    }, [userId]);   
+    });   
     return <>
         <h1>LA POKE API</h1>
+        <h2>BIENVENIDO {state?.username}  <button onClick={onLogout}>Cerrar sesion</button></h2>
         <ul>
         {pokemons.map((pokemon,index) => (
-          <li key={index}>{index} - {pokemon.name}</li>
+          <div onClick={toPokemon} >
+            <li key={index}>{index} - {pokemon.name}</li>
+          </div>
         ))}
       </ul>
     </>
